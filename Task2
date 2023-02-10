@@ -1,0 +1,146 @@
+// Task2.cpp : This file contains the 'main' function. Program execution begins and ends there.
+
+//От клавиатурата се въвеждат две числа N
+//и M - брой редове и колони на матрица от
+//естествени числа, която трябва да бъде заделена
+//с точна големина.Заменете всички прости числа
+//в матрицата с 0. За целта напишете функция със
+//следната сигнатура :
+//
+//void replacePrimeNumbers(int** matrix,std::size_t rows, std::size_t columns);
+//
+//След това заделете памет с точна големина за
+//нова матрица, в която са изтрити всички
+//срещания на 0. Ако има ред, в който всички
+//числа са 0, то той трябва да бъде изтрит.
+//Запазете относителната наредба на елементите
+//на всеки ред, както и на отделните редове в
+//таблицата.Това може да постигнете, като
+//реализирате функция със сигнатура :
+//
+//int** allocateNewMatrix(int** matrix, std::size_t rows, std::size_t columns);
+//
+//Пример:
+//Вход:
+//5 6
+//4 5 6 8 0 11
+//13 0 3 7 5 19
+//51 8 6 15 9 4
+//7 8 0 12 3 5
+//0 0 7 0 23 0 0
+//
+//(Междинен резултат) :
+//    4 0 6 8 0 0
+//    0 0 0 0 0 0
+//    51 8 6 15 9 4
+//    0 8 0 12 0 0
+//    0 0 0 0 0 0
+//
+//    Изход :
+//    4 6 8
+//    51 8 6 15 9 4
+//    8 12
+
+
+#include <iostream>
+#include <cmath>
+
+bool isPrime(int number)
+{
+	if (number <= 1)
+		return false;
+	for (int i = 2; i <= sqrt(number); i++)
+		if (number % i == 0)
+			return false;
+
+	return true;
+}
+
+void replacePrimeNumbers(int** matrix, std::size_t rows, std::size_t columns)
+{
+	for (std::size_t i = 0; i < rows; i++)
+		for (std::size_t j = 0; j < columns; j++)
+			if (isPrime(matrix[i][j]))
+				matrix[i][j] = 0;
+}
+
+int** allocateNewMatrix(int** matrix, std::size_t rows, std::size_t columns) {
+	int** newMatrix = nullptr;
+	int newRows = 0;
+	int newColumns = 0;
+
+	for (std::size_t i = 0; i < rows; i++) {
+		for (std::size_t j = 0; j < columns; j++) {
+			if (matrix[i][j] != 0) {
+				if (newMatrix == nullptr) {
+					newMatrix = new int* [rows];
+					for (std::size_t k = 0; k < rows; k++) {
+						newMatrix[k] = new int[columns];
+					}
+				}
+				newMatrix[newRows][newColumns++] = matrix[i][j];
+				break;
+			}
+		}
+		if (newColumns) {
+			newRows++;
+			newColumns = 0;
+		}
+	}
+
+	return newMatrix;
+}
+
+
+int main()
+{
+	std::size_t rows, columns;
+	std::cout << "Enter the number of rows: ";
+	std::cin >> rows;
+	std::cout << "Enter the number of columns: ";
+	std::cin >> columns;
+	int** matrix = new int* [rows];
+	for (std::size_t i = 0; i < rows; i++)
+		matrix[i] = new int[columns];
+
+	std::cout << "Enter the elements of the matrix: " << std::endl;
+	for (std::size_t i = 0; i < rows; i++)
+		for (std::size_t j = 0; j < columns; j++)
+			std::cin >> matrix[i][j];
+
+	replacePrimeNumbers(matrix, rows, columns);
+
+	std::cout << "The matrix after replacing prime numbers with 0: " << std::endl;
+	for (std::size_t i = 0; i < rows; i++)
+	{
+		for (std::size_t j = 0; j < columns; j++)
+			std::cout << matrix[i][j] << " ";
+		std::cout << std::endl;
+	}
+
+	int** newMatrix = allocateNewMatrix(matrix, rows, columns);
+
+	std::cout << "The matrix after allocation: " << std::endl;
+	for (int i = 0; i < rows; i++) {
+		if (newMatrix[i] == nullptr) {
+			continue;
+		}
+		for (int j = 0; j < columns; j++) {
+			if (newMatrix[i][j] == 0) {
+				break;
+			}
+			std::cout << newMatrix[i][j] << " ";
+		}
+		std::cout << std::endl;
+	}
+
+	for (int i = 0; i < rows; i++) {
+		delete[] matrix[i];
+		delete[] newMatrix[i];
+	}
+	delete[] matrix;
+	delete[] newMatrix;
+
+
+	return 0;
+}
