@@ -1,0 +1,55 @@
+// Task3.cpp : This file contains the 'main' function. Program execution begins and ends there.
+//
+//Да се напише функция, която в даден
+//символен низ замества всяко срещане на израз
+//от вида a + b + c + ... + n, където a, b, c, …, n са
+//едноцифрени естествени числа, с пресметнатата
+//стойност на израза.Пример:
+//Let’s meet tomorrow at 8 + 0 + 2 o’clock at 3 + 2
+//James Bourchier St(FMI).
+//трябва да се промени на :
+//Let’s meet tomorrow at 10 o’clock at 5 James
+//Bourchier St(FMI).
+
+#include <iostream>
+#include <cstring>
+
+int sum_numbers(const char* str, int start, int end) {
+    int sum = 0;
+    for (int i = start; i <= end; i++) {
+        sum = sum * 10 + (str[i] - '0');
+    }
+    return sum;
+}
+
+void swap_syntax(const char* input, char* output) {
+    int input_len = strlen(input);
+    int output_len = 0;
+    int i = 0;
+    while (i < input_len) {
+        if (isdigit(input[i])) {
+            int start = i;
+            while (i < input_len && isdigit(input[i])) {
+                i++;
+            }
+            int end = i - 1;
+            int sum = sum_numbers(input, start, end);
+            output_len += sprintf(output + output_len, "%d", sum);
+        }
+        else {
+            output[output_len++] = input[i];
+            i++;
+        }
+    }
+    output[output_len] = '\0';
+}
+
+int main() {
+    const char* input = "Let’s meet tomorrow at 8 + 0 + 2 o’clock at 3 + 2 James Bourchier St(FMI).";
+    char output[1000];
+    swap_syntax(input, output);
+    std::cout << "Input string: " << input << std::endl;
+    std::cout << "Output string: " << output << std::endl;
+    return 0;
+}
+
