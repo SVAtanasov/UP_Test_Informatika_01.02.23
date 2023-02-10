@@ -1,0 +1,66 @@
+// Task1.cpp : This file contains the 'main' function. Program execution begins and ends there.
+//Да се напише функция, която приема
+//масив с точния брой на приоритетите и връща
+//последователността на изпълнение на задачите.
+//Известно е, че задачите с четен приоритет имат
+//двойна приоритетност, тоест се изпълняват
+//преди тези с нечетна приоритетност.Пример:
+//Вход:
+//6
+//10
+//5
+//11
+//7
+//222
+//45
+//Изход: 6 10 222 5 7 11 45
+
+#include <iostream>
+
+void enterArray(int arr[], int size) {
+    for (int i = 0; i < size; i++) {
+        std::cout << "Enter a natural number: ";
+        std::cin >> arr[i];
+    }
+}
+
+void sortArray(int arr[], int size) {
+    for (int i = 0; i < size - 1; i++) {
+        for (int j = i + 1; j < size; j++) {
+            if (arr[i] % 2 == 0 && arr[j] % 2 != 0) {
+                continue;
+            }
+            if (arr[i] % 2 != 0 && arr[j] % 2 == 0) {
+                int temp = arr[i];
+                arr[i] = arr[j];
+                arr[j] = temp;
+            }
+            else if (arr[i] > arr[j]) {
+                int temp = arr[i];
+                arr[i] = arr[j];
+                arr[j] = temp;
+            }
+        }
+    }
+}
+
+int main() {
+    const int ARRAY_SIZE = 100;
+    int arr[ARRAY_SIZE];
+    int userSize;
+
+    std::cout << "How many numbers do you want to enter: ";
+    do
+    {
+        std::cin >> userSize;
+    } while (userSize < 1 || userSize > 100);
+
+    enterArray(arr, userSize);
+    sortArray(arr, userSize);
+    std::cout << "The sorted array: ";
+    for (int i = 0; i < userSize; i++) {
+        std::cout << arr[i] << " ";
+    }
+    return 0;
+}
+
